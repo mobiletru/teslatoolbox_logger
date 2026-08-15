@@ -1,0 +1,8 @@
+global:
+  scrape_interval: 2s
+  evaluation_interval: 5s
+
+scrape_configs:
+  - job_name: tesla-can
+    static_configs:
+      - targets: ["tesla-can-exporter:9105"]
