@@ -4,6 +4,22 @@ Grafana dashboard for **Tesla Toolbox 3 CAN Explorer** signals, plus a Playwrigh
 
 Toolbox CAN Explorer plots historical vehicle CAN signals (VIN / Product ID, log availability, then search-and-overlay of names such as `BMS_socUI` and `DI_vehicleSpeed`). This repo mirrors that layout in Grafana using Prometheus metrics named `tesla_can_signal`.
 
+## Live: grafana.mobileccs.com
+
+[https://grafana.mobileccs.com](https://grafana.mobileccs.com) is deployed from [`workers/grafana`](workers/grafana). It serves a Grafana-style live dashboard and proxies the signal API of the `tesla-signals` Worker over a service binding, so no Prometheus or Docker is required to view current values.
+
+| Path | Serves |
+| --- | --- |
+| `/` | Dashboard: KPI stats, four live charts, signal picker |
+| `/api/health` | Worker health and which upstream is in use |
+| `/api/signals`, `/api/signals/catalog` | Current snapshot and signal catalog |
+| `/api/stream` | Server-sent events, ~4 Hz |
+| `/metrics` | Prometheus `tesla_toolbox3_signal` passthrough |
+
+See [`workers/grafana/README.md`](workers/grafana/README.md) for deploy and configuration.
+
+**The data is synthetic.** `tesla-signals` hardcodes `source = "toolbox3-demo"` and generates its values in-Worker, so `grafana.mobileccs.com` shows simulated HVAC, battery, and tire signals rather than a vehicle. The demo catalog has no DI motor currents. Serving real readings requires a Toolbox 3 gateway.
+
 ## Playwright login (Toolbox 3)
 
 Tesla SSO lives at `auth.tesla.com` behind Akamai. Datacenter IPs (including this Cursor cloud agent, `34.214.152.11`) are **Access Denied**. Run login from a shop or home network that can open Toolbox in Chrome.
@@ -29,16 +45,6 @@ No vehicle required. Synthetic Toolbox signal names are exported on `:9105/metri
 python scripts/generate_dashboard.py
 docker compose up -d
 ```
-
-Live Grafana-style viewer (Cloudflare Worker): [https://grafana.mobileccs.com](https://grafana.mobileccs.com). It proxies `tesla-signals` and plots the same `tesla_toolbox3_signal` series.
-
-```bash
-cd workers/grafana
-npm install
-npx wrangler deploy
-```
-
-The Worker is named `grafana` on Cloudflare account `mobileclimatre` and uses a Custom Domain for `grafana.mobileccs.com`.
 
 Then open [http://localhost:3000](http://localhost:3000) (admin / `tesla`). Provisioned dashboards:
 
