@@ -3,6 +3,13 @@ global:
   evaluation_interval: 5s
 
 scrape_configs:
+  - job_name: tesla-mobileccs
+    scheme: https
+    metrics_path: /metrics
+    scrape_interval: 5s
+    static_configs:
+      - targets: ["tesla.mobileccs.com"]
+
   - job_name: tesla-can
     static_configs:
       - targets: ["tesla-can-exporter:9105"]

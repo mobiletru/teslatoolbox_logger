@@ -30,7 +30,10 @@ python scripts/generate_dashboard.py
 docker compose up -d
 ```
 
-Then open [http://localhost:3000](http://localhost:3000) (admin / `tesla`). The provisioned dashboard is **Tesla Toolbox CAN Explorer**.
+Then open [http://localhost:3000](http://localhost:3000) (admin / `tesla`). Provisioned dashboards:
+
+- **Tesla Toolbox 3 — tesla.mobileccs.com** scrapes live Prometheus from [https://tesla.mobileccs.com/metrics](https://tesla.mobileccs.com/metrics) (`tesla_toolbox3_signal`). That Worker is currently `toolbox3-demo` (synthetic HVAC/battery), not a live car, until a Toolbox 3 gateway is configured.
+- **Tesla Toolbox CAN Explorer** uses local demo exporter `:9105` with CAN Explorer names (`BMS_socUI`, …).
 
 ## Metric shape
 
