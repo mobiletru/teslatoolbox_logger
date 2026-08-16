@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+*.pyc
+.toolbox-session.json
+.playwright-auth/
+.env
+*.png
+node_modules/
+.wrangler/
+workers/grafana/worker-configuration.d.ts
+grafana/data/
+prometheus/data/

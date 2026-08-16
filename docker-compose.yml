@@ -1,0 +1,39 @@
+services:
+  tesla-can-exporter:
+    image: python:3.12-slim
+    command: ["python", "/app/exporter.py"]
+    volumes:
+      - ./demo/exporter.py:/app/exporter.py:ro
+    ports:
+      - "9105:9105"
+    environment:
+      TESLA_VIN: ${TESLA_VIN:-5YJ3E1EA0KF000000}
+      TESLA_CAN_BUS: vehicle
+
+  prometheus:
+    image: prom/prometheus:v2.54.1
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.retention.time=15d
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+    depends_on:
+      - tesla-can-exporter
+
+  grafana:
+    image: grafana/grafana:11.4.0
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: tesla
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Viewer
+      GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH: /var/lib/grafana/dashboards/tesla-toolbox-can-explorer.json
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on:
+      - prometheus
