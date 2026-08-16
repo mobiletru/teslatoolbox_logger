@@ -30,6 +30,16 @@ python scripts/generate_dashboard.py
 docker compose up -d
 ```
 
+Live Grafana-style viewer (Cloudflare Worker): [https://grafana.mobileccs.com](https://grafana.mobileccs.com). It proxies `tesla-signals` and plots the same `tesla_toolbox3_signal` series.
+
+```bash
+cd workers/grafana
+npm install
+npx wrangler deploy
+```
+
+The Worker is named `grafana` on Cloudflare account `mobileclimatre` and uses a Custom Domain for `grafana.mobileccs.com`.
+
 Then open [http://localhost:3000](http://localhost:3000) (admin / `tesla`). Provisioned dashboards:
 
 - **Tesla Toolbox 3 — tesla.mobileccs.com** scrapes live Prometheus from [https://tesla.mobileccs.com/metrics](https://tesla.mobileccs.com/metrics) (`tesla_toolbox3_signal`). That Worker is currently `toolbox3-demo` (synthetic HVAC/battery), not a live car, until a Toolbox 3 gateway is configured.

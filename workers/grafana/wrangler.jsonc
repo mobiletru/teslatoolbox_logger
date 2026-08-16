@@ -1,0 +1,29 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "grafana",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-08-16",
+  "compatibility_flags": ["nodejs_compat"],
+  "account_id": "bb21a9b692b753b16ebbdf537f174909",
+  "workers_dev": true,
+  "preview_urls": true,
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  },
+  "routes": [
+    {
+      "pattern": "grafana.mobileccs.com",
+      "custom_domain": true
+    }
+  ],
+  "services": [
+    {
+      "binding": "TESLA_SIGNALS",
+      "service": "tesla-signals"
+    }
+  ],
+  "vars": {
+    "TESLA_SIGNALS_URL": "https://tesla.mobileccs.com"
+  }
+}
